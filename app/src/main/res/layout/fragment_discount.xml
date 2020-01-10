@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/discount_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/shop_discount"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/discount_new_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/discount_old_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextDisabled"/>
+
+        <TextView
+            android:id="@+id/discount_type_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discount"/>
+
+        <TextView
+            android:id="@+id/discount_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name discount" />
+
+        <TextView
+            android:id="@+id/discount_start_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>

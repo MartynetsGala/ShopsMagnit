@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Магнит</string>
+    <string name="shop_title_label">Название</string>
+    <string name="shop_type_name_mm">Магазин магнит</string>
+    <string name="shop_type_name_gm">Гипермаркет магнит</string>
+    <string name="shop_type_name_ma">Магнит аптека</string>
+    <string name="shop_type_name_mo">Магнит оптовый</string>
+    <string name="shop_type_name_dg">Магнит косметик</string>
+    <string name="shop_title_opening">нет информации</string>
+    <string name="shop_str_opening">Открыто</string>
+    <string name="shop_str_closing">Закрыто</string>
+    <string name="string_btn_actions">Акции</string>
+    <string name="string_btn_shops">Магазины</string>
+    <string name="string_btn_maps">Карта</string>
+</resources>
