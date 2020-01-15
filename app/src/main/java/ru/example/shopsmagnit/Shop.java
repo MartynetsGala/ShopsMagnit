@@ -18,6 +18,56 @@ public class Shop {
     private ShopType mShopType;
     private double mDistance;
 
+
+    public void setId(Integer id) {
+        mId = id;
+    }
+
+    public void setType(Integer type) {
+        mType = type;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public void setCode(String code) {
+        mCode = code;
+    }
+
+    public void setAddress(String address) {
+        mAddress = address;
+    }
+
+    public void setLng(Double lng) {
+        mLng = lng;
+    }
+
+    public void setLat(Double lat) {
+        mLat = lat;
+    }
+
+    public void setOpening(String opening) {
+        mOpening = opening;
+    }
+
+    public void setClosing(String closing) {
+        mClosing = closing;
+    }
+
+    public void setPlastic(Boolean plastic) {
+        mPlastic = plastic;
+    }
+
+    public void setModification(String modification) {
+        mModification = modification;
+    }
+
+    public void setShopType(ShopType shopType) {
+        mShopType = shopType;
+    }
+
+
     public Shop(Integer mId, Integer mType, String mName, String mCode, String mAddress
                 , Double mLng, Double mLat, String mOpening, String mClosing, Boolean mPlastic
                 , String mModification, ShopType mShopType, double mDistance) {
@@ -35,6 +85,10 @@ public class Shop {
         this.mShopType = mShopType;
         this.mDistance = mDistance;
 
+    }
+
+    public Shop(Integer id) {
+        mId = id;
     }
 
     public Integer getId() {

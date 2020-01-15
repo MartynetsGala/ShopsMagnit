@@ -38,7 +38,7 @@ public class ShopFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Integer shopId = (Integer) getArguments().getSerializable(ARG_SHOP_ID);
-        mShop = ShopLab.get().getShops(shopId);
+        mShop = ShopLab.get().getShop(shopId);
 
     }
 

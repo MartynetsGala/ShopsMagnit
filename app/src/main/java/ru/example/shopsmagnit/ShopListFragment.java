@@ -1,6 +1,7 @@
 package ru.example.shopsmagnit;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,16 +23,51 @@ public class ShopListFragment extends Fragment {
     private RecyclerView mShopRecyclerView;
     private ShopAdapter mAdapter;
 
+    private Long mSaveDate;
+
+    public void setSaveDate(Long saveDate) {
+        mSaveDate = saveDate;
+    }
+    private class DatabaseTask extends AsyncTask<List<Shop>, Void, Void> {
+        @Override
+        protected Void doInBackground(List<Shop>... params) {
+            try {
+                ShopDBLab shopDBLab = new ShopDBLab(getActivity());
+                //записали все или изменения в БД
+                for (List<Shop> shops: params) {
+                    shopDBLab.updateShops(shops);
+                }
+            } catch (Exception ioe) {
+                System.out.println(ioe.toString());
+            }
+            return null;
+        }
+    }
 
     private class ShopTask extends AsyncTask<Void, Void, Void> {
+
+        public List<Shop> listShops;
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 List<ShopType> listShopTypes= new ShopTypeExtract().getShopType();
                 ShopTypeLab.get().setShopTypes(listShopTypes);
 
-                List<Shop> listShops= new ShopExtract().getShops();
-                ShopLab.get().setShops(listShops);
+                //получили список магазинов все или изменения
+                listShops = new ShopExtract().getShops(mSaveDate);
+                //записали все или изменения в БД
+                if  (mSaveDate == 0) {
+                    //сохранять в параллельном потоке, использовать полученный список
+                    ShopLab.get().setShops(listShops);
+                } else {
+                    //сохранять в UI потоке и использовать список из БД
+                    ShopDBLab shopDBLab = new ShopDBLab(getActivity());
+                    shopDBLab.updateShops(listShops);
+                    //считать ВСЕ из БД в новый список
+                    List<Shop> allShopInDB = shopDBLab.getShops();
+                    ShopLab.get().setShops(allShopInDB);
+                }
                 ShopLab.get().updateLocation();
             } catch (Exception ioe) {
                 System.out.println(ioe.toString());
@@ -43,6 +79,10 @@ public class ShopListFragment extends Fragment {
         protected void onPostExecute(Void params) {
             super.onPostExecute(params);
             updateUI();
+            if  (mSaveDate == 0) {
+                //сохранять в  бд в AsyncTask
+                new DatabaseTask().execute(listShops);
+            }
         }
     }
 
@@ -74,6 +114,7 @@ public class ShopListFragment extends Fragment {
         super.onResume();
         updateUI();
     }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

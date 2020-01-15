@@ -8,36 +8,77 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ShopExtract {
-    public List<Shop> getShops() {
-        List<Shop> mShops = new ArrayList<>();
+
+    private List<Shop> mShops = new ArrayList<>();
+    private SimpleDateFormat simpleDateFormat;
+
+    public ShopExtract() {
+        String pattern = "EEE MMM dd yyyy HH:mm:ss 'GMT +0300 (MSK)'";
+        simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
+    }
+
+    public List<Shop> getShops(Long saveDate) {
         // Create URL
         URL url = null;
         HttpURLConnection myConnection = null;
-        int responseCode = 0;
-        String ifModifiedSinceString = null;
 
         try {
             url = new URL("http://mobiapp.tander.ru/magnit-api/shops");
-
 
             // Create connection
             myConnection = (HttpURLConnection) url.openConnection();
 
             //добавление заголовка запроса
             myConnection.setRequestProperty("version", "4");
+            Date oldDate = new Date(saveDate);
+            Date dateToday = new Date();
+            long milliseconds = dateToday.getTime() - oldDate.getTime();
+            int deltaDays = (int) (milliseconds / (24 * 60 * 60 * 1000));
+            Calendar instance = Calendar.getInstance();
 
-            ifModifiedSinceString ="Thu Jan 01 1970 00:00:00 GMT +0300 (MSK)";//simpleDateFormat.format(new Date());
+            if (saveDate > 0 && deltaDays < 400) {
+                //проверка на дату и цикл по дням
+                for (int i = deltaDays; i < deltaDays; i++) {
+                    instance.setTime(oldDate);
+                    instance.add(Calendar.DAY_OF_MONTH, 1);
+                    Date nextDate = instance.getTime();
+                    oldDate = nextDate;
+
+                    openingConnect(myConnection, oldDate);
+
+                }
+            } else {
+                oldDate = new Date(0);
+                openingConnect(myConnection, oldDate);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            myConnection.disconnect();
+        }
+        return mShops;
+    }
+
+    public void openingConnect(HttpURLConnection myConnection, Date oldDate) {
+        try {
+            String ifModifiedSinceString = simpleDateFormat.format(oldDate.getTime());
             myConnection.setRequestProperty("If-Modified-Since", ifModifiedSinceString);
 
+
+            int responseCode = 0;
             responseCode = myConnection.getResponseCode();
             //чтение ответов
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream responseBody = myConnection.getInputStream();
-               // Success
+                // Success
                 InputStreamReader responseBodyReader =
                         new InputStreamReader(responseBody, "UTF-8");
                 //чтение JSON
@@ -54,12 +95,9 @@ public class ShopExtract {
             } else {
                 // Error
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            myConnection.disconnect();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        return mShops;
     }
 
     public Shop readShop(JsonReader reader) throws IOException {

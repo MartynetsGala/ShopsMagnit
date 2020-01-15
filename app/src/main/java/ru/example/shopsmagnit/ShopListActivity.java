@@ -1,7 +1,9 @@
 package ru.example.shopsmagnit;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -14,6 +16,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Date;
+
 public class ShopListActivity extends SingleFragmentActivity {
 
     private LocationManager locationManager;
@@ -23,6 +27,8 @@ public class ShopListActivity extends SingleFragmentActivity {
     public double mLat = 39.002729;
     public double mLng = 45.074233;
 
+    SharedPreferences sPref;
+    final String SAVED_DATE = "saved_date";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,13 +42,14 @@ public class ShopListActivity extends SingleFragmentActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_CODE_PERMISSION_FINE_LOCATION);
         }
-
     }
 
     @Override
     protected Fragment createFragment() {
         if (mFragment == null) {
+            sPref = getPreferences(MODE_PRIVATE);
             mFragment = new ShopListFragment();
+            ((ShopListFragment)mFragment).setSaveDate(sPref.getLong(SAVED_DATE, 0));
         }
         return mFragment;
     }
@@ -76,6 +83,8 @@ public class ShopListActivity extends SingleFragmentActivity {
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
+        saveDate();
+
     }
 
     @Override
@@ -121,6 +130,11 @@ public class ShopListActivity extends SingleFragmentActivity {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     private void showLocation(Location location) {
         if (location == null)
             return;
@@ -137,5 +151,11 @@ public class ShopListActivity extends SingleFragmentActivity {
 
     }
 
+    void saveDate() {
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putLong(SAVED_DATE, new Date().getTime());
+        ed.commit();
+    }
 
 }

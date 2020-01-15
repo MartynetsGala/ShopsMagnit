@@ -1,8 +1,10 @@
 package ru.example.shopsmagnit;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 
 public class ShopLab {
     private static ShopLab sShopLab;
@@ -11,6 +13,11 @@ public class ShopLab {
     private double sLng;
 
     private List<Shop> mShops;
+
+    public List<Shop> getShops() {
+        return mShops;
+    }
+
 
     public static ShopLab get() {
         if (sShopLab == null) {
@@ -23,11 +30,7 @@ public class ShopLab {
         mShops = new ArrayList<>();
     }
 
-    public List<Shop> getShops() {
-        return mShops;
-    }
-
-    public Shop getShops(Integer id) {
+    public Shop getShop(Integer id) {
         for (Shop shop : mShops) {
             if (shop.getId().equals(id)) {
                 return shop;
@@ -35,6 +38,8 @@ public class ShopLab {
         }
         return null;
     }
+
+
 
     public void setShops(List<Shop> shops) {
         mShops = shops;
@@ -47,6 +52,8 @@ public class ShopLab {
     public void setLng(double sLng) {
         this.sLng = sLng;
     }
+
+
 
     public void updateLocation() {
         if (sLat!=0.0 || sLng!=0.0){
